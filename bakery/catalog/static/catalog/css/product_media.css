@@ -1,0 +1,114 @@
+
+@media only screen and (max-width: 900px) {
+
+/*Catalog*/
+.grid-container {
+    width: 100%;
+    display: grid;
+    grid-template-rows: 25% 25% 25% 25%;
+    grid-template-columns: 5fr 5fr;
+    grid-template-areas:
+        'link-1 link-2'
+        'link-3 link-3'
+        'link-4 link-5'
+        'link-6 link-6'
+}
+
+@media only screen and (max-width: 768px) {
+
+    /*Header*/
+    .menu {
+            /*display: none;*/
+            margin-top: 20px;
+            max-height: 0;
+            overflow: hidden;
+            position: absolute;
+            text-align: center;
+            right: 0;
+            left: 0;
+
+            background-color: bisque;
+
+            z-index: 4;
+
+        }
+
+
+        .hamburger {
+            display: block;
+            padding: 20px 0;
+        }
+
+
+        .nav-menu-link {
+            display: block;
+            padding: 15px;
+
+        }
+
+        .nav-menu-item {
+            transition: all .5s;
+        }
+
+        .nav-menu-item:hover {
+            background-color: rgb(235, 189, 134);
+        }
+
+        #checkbox_toggle:checked ~ .menu {
+            display: block;
+            max-height: 100%;
+            transition: all .3s;
+        }
+
+        #checkbox_toggle:checked ~ .hamburger .hamburger-line {
+            background-color: transparent;
+        }
+
+        #checkbox_toggle:checked ~ .hamburger .hamburger-line::before {
+            transform: rotate(-45deg);
+            top: 0;
+        }
+
+        #checkbox_toggle:checked ~ .hamburger .hamburger-line::after {
+            transform: rotate(45deg);
+            top: 0;
+        }
+
+    /*Story*/
+    .video {
+        z-index: 0;
+        }
+
+    /*Footer*/
+    .footer-container {
+        height: 300px;
+        display: grid;
+        grid-template-columns: 100%;
+        grid-template-rows: 33.33%;
+        grid-template-areas:
+        'link-1'
+        'link-2'
+        'link-3'
+
+}
+
+} 
+
+
+@media only screen and (max-width: 480px) {
+
+/*Catalog*/
+.grid-container {
+    width: 100%;
+    display: grid;
+    grid-template-rows: 16.66% 16.66% 16.66% 16.66% 16.66% 16.66% ;
+    grid-template-columns: 5fr;
+    grid-template-areas:
+        'link-1' 
+        'link-2'
+        'link-3'
+        'link-4'
+        'link-5'
+        'link-6'
+        'link-6'
+} 

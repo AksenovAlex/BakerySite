@@ -1,0 +1,381 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+
+/* Header */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: bisque;
+}
+
+.nav-menu-item {
+    list-style: none;
+}
+
+.nav-logo-link {
+    text-decoration: none;
+
+    font-family: Lobster;
+    font-size: 36px;
+    font-weight: 600;
+
+    color: rgb(106, 49, 8);
+}
+
+.nav-menu-link {
+    text-decoration: none;
+    color: rgb(106, 49, 8);
+}
+
+.menu {
+    display: flex;
+    font-family: Oswald;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.nav-menu-item {
+    padding: 5px 15px;
+}
+
+.nav-menu-link:hover {
+    transition: all .3s;
+    color: rgb(224, 101, 14);
+}
+
+#checkbox_toggle {
+    display: none;
+}
+
+.hamburger {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.hamburger-line {
+    display: block;
+    width: 24px;
+    height: 3px;
+
+    position: relative;
+
+    background-color: rgb(106, 49, 8);
+}
+
+.hamburger-line::before,
+.hamburger-line::after {
+    content: "";
+    display: block;
+    position: absolute;
+    transition: all .3s;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgb(106, 49, 8);
+}
+
+.hamburger-line::before {
+    top: 7px;
+}
+
+.hamburger-line::after {
+    top: -7px;
+}
+
+
+/*Story*/
+
+.story {
+    max-height: 100vh;
+    overflow: hidden;
+    position: relative;
+
+    background-image: url("../video/story-screen.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}
+
+.story::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(0, 0, 0, 0.6);
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.story-content {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 3;
+
+    color: antiquewhite;
+}
+
+.story-content-list {
+    width: 100%;
+    height: 100px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.story-content-item {
+    list-style: none;
+    font-family: Lobster;
+    font-size: 24px;
+    color: rgb(237, 231, 226);
+}
+
+.video {
+    position: relative;
+    padding-bottom: 56.25%;
+    z-index: 1;
+}
+
+.video-media {
+    width: 100%;
+    height: auto;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+/*Catalog*/
+
+.catalog {
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: bisque;
+}
+
+.grid-container {
+    width: 100%;
+    height: 600px;
+    display: grid;
+    grid-template-rows: 50% 50% 50%;
+    grid-template-columns: 5fr 5fr 5fr;
+    grid-template-areas:
+        'link-1 link-2 link-3'
+        'link-4 link-5 link-6'
+
+}
+
+.grid-container div:nth-child(1) {
+    grid-area: link-1;
+}
+
+.grid-container div:nth-child(2) {
+    grid-area: link-2;
+}
+
+.grid-container div:nth-child(3) {
+    grid-area: link-3;
+}
+
+.grid-container div:nth-child(4) {
+    grid-area: link-4;
+}
+
+.grid-container div:nth-child(5) {
+    grid-area: link-5;
+}
+
+.grid-container div:nth-child(6) {
+    grid-area: link-6;
+}
+
+.catalog-item-1 {
+    margin: 5px;
+    background-image: url("../images/category/bread.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    border-radius: 10px;
+}
+
+.catalog-item-2 {
+    margin: 5px;
+
+    background-image: url("../images/category/muffin.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    border-radius: 10px;
+}
+
+.catalog-item-3 {
+    margin: 5px;
+
+    background-image: url("../images/category/pie.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    border-radius: 10px;
+}
+
+.catalog-item-4 {
+    margin: 5px;
+
+    background-image: url("../images/category/pizza.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    border-radius: 10px;
+}
+
+.catalog-item-5 {
+    margin: 5px;
+
+    background-image: url("../images/category/cookies.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    border-radius: 10px;
+
+}
+
+.catalog-item-6 {
+    margin: 5px;
+
+    background-image: url("../images/category/cake.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    border-radius: 10px;
+
+}
+
+.catalog-link {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-decoration: none;
+    font-family: Lobster;
+    font-size: 24px;
+    color: #fff;
+
+    text-shadow:5px 5px 3px black;
+
+}
+
+/*Footer*/
+
+.footer {
+    width: 100%;
+    height: 100px;
+    background: bisque;
+
+
+    font-family: Oswald;
+    font-size: 14px;
+    font-weight: 400;
+
+    box-shadow: 0px -5px 10px 5px rgba(0, 0, 0, 0.5);
+
+
+}
+
+
+.footer-container {
+    background: bisque;
+
+    width: 100%;
+    height: 100px;
+    display: grid;
+    grid-template-columns: 5fr 5fr 5fr;
+    grid-template-areas:
+        'link-1 link-2 link-3'
+
+}
+
+.footer-container div:nth-child(1) {
+    grid-area: link-1;
+}
+
+.footer-container div:nth-child(2) {
+    grid-area: link-2;
+}
+
+.footer-container div:nth-child(3) {
+    grid-area: link-3;
+}
+
+
+.trade-simbol {
+
+    font-size: 16px;
+    font-weight: 600;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contacts {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.social-networking {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer-icons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+}
+
+.footer-icons-item {
+    list-style: none;
+}
+
+.footer-icons-link {
+    text-decoration: none;
+
+}

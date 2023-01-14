@@ -1,0 +1,44 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'catalog/css/product_category.css' %}" type="text/css">
+
+<div class="conteiner">
+        <div class="sidebar">
+            <div class="sidebar-inner">
+                <div class="sidebar-title">
+                    {{ category.title }}
+                </div>
+                {% for type in types %}
+                <ul class="sidebar-menu">
+                    <li class="sidebar-menu-item"><a class="sidebar-menu-link" href="#">{{ type }}</a></li>
+                {% endfor %}
+                </ul>
+            </div>
+
+        </div>
+        {% for product in products %}
+        <div class="content">
+            <div class="content-inner">
+                <div class="cart">
+                    <div class="cart-img-box">
+                        <img class='cart-img' src="{{ product.image.url }}">
+                    </div>
+                    <div class="cart-title">
+                        {{ product.title }}
+                    </div>
+                    <div class="cart-content">
+                        {{ product.description|truncatewords:20 }}
+                    </div>
+                    <ul class="btn-keeper">
+                        <li class="content-btn"><a class="btn" href="#">+{{product.price}}₽</a></li>
+                        <li class="content-btn"><a class="btn" href="#">Подробнее</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'catalog/css/product_style.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'catalog/css/product_media.css' %}" type="text/css">
+
+<div class="product-info">
+    <div class="product-info-inner">
+        <div class="grid-product">
+        <div class="product-image elem">
+            <img src="{{ product.image.url }}" class="product-image-item">
+        </div>
+        <div class="product-title elem">
+            {{ product.title }}
+        </div>
+        <div class="product-description elem">
+            <p>Описание:</p>
+            <p>{{ product.description }}</p>
+        </div>
+        <div class="product-structure elem">
+            <p>Состав:</p>
+            <p>{{ product.structure }}</p>
+        </div>
+        <div class="product-weight elem">
+            <p>Вес: {{ product.weight }}</p>
+        </div>
+        <div class="product-price elem">
+            <p>Цена: {{ product.price }} ₽</p>
+        </div>
+    </div>
+    </div>
+
+</div>
+
+
+{% endblock %}

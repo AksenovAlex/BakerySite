@@ -1,0 +1,84 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-latest.js" type="text/javascript"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'catalog/css/reset.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'catalog/css/style.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'catalog/css/media.css' %}" type="text/css">
+    <title>Bakery</title>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/" class="nav-logo-link">Bakery</a>
+        </div>
+        <ul class="nav-links">
+            <input type="checkbox" id="checkbox_toggle"/>
+            <label for="checkbox_toggle" class="hamburger"><span class="hamburger-line"></span></label>
+            <div class="menu">
+                <li class="nav-menu-item"><a class="nav-menu-link scrollto" href="#catalog">Продукция</a></li>
+                <li class="nav-menu-item"><a class="nav-menu-link" href="#">Забота о госте</a></li>
+                <li class="nav-menu-item"><a class="nav-menu-link" href="#">Корзина</a></li>
+                <li class="nav-menu-item"><a class="nav-menu-link" href="#">Войти</a></li>
+            </div>
+        </ul>
+    </nav>
+
+{% block content %}
+{% endblock %}
+
+
+    <div class="footer">
+        <div class="footer-container">
+            <div class="trade-simbol">
+                © Bakery 2022
+            </div>
+            <div class="contacts">
+                <div class="title">
+                    Контакты
+                </div>
+                <div class="contacts-type">
+                    <div class="email">
+                        Почта: bakery@post.com
+                    </div>
+                    <div class="phone-number">
+                        Телефон: +71234567890
+                    </div>
+                </div>
+            </div>
+            <div class="social-networking">
+                <div class="title">
+                    Мы в социальных сетях
+                </div>
+                <ul class="footer-icons">
+                    <li class="footer-icons-item"><a class="footer-icons-link" href="https://vk.com/"><img src="{% static 'catalog/images/footer_elements/vk.png' %}" alt="VK"></a></li>
+                    <li class="footer-icons-item"><a class="footer-icons-link" href="https://ok.ru/"><img src="{% static 'catalog/images/footer_elements/ok.png' %}" alt="OK"></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+<script>
+jQuery(document).ready(function() {
+jQuery("a.scrollto").click(function () {
+elementClick = jQuery(this).attr("href")
+destination = jQuery(elementClick).offset().top;
+jQuery("html:not(:animated),body:not(:animated)").animate({scrollTop: destination}, 800);
+return false;
+});
+});
+</script>
+</body>
+</html>
+

@@ -1,0 +1,39 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% load static %}
+    <div class="story">
+        <div class="video">
+            <video class="video-media" src="{% static 'catalog/video/story.mp4' %}" autoplay muted loop></video>
+        </div>
+
+        <div class="story-content">
+            <ul class="story-content-list">
+                <li class="story-content-item">Ручная работа</li>
+                <li class="story-content-item">Всегда свежая выпечка</li>
+                <li class="story-content-item">Натуральные ингридиенты</li>
+            </ul>
+        </div>
+    </div>
+    <div class="catalog" id="catalog">
+        <div class="grid-container">
+            <div class="catalog-item-1">
+                <a class="catalog-link" href="{{ categories.5.url }}">{{ categories.5.name }}</a>
+            </div>
+            <div class="catalog-item-2">
+                <a class="catalog-link" href="{{ categories.3.url }}">{{ categories.3.name }}</a>
+            </div>
+            <div class="catalog-item-3">
+                <a class="catalog-link" href="{{ categories.1.url }}">{{ categories.1.name }}</a>
+            </div>
+            <div class="catalog-item-4">
+                <a class="catalog-link" href="{{ categories.2.url }}">{{ categories.2.name }}</a>
+            </div>
+            <div class="catalog-item-5">
+                <a class="catalog-link" href="{{ categories.0.url }}">{{ categories.0.name }}</a>
+            </div>
+            <div class="catalog-item-6">
+                <a class="catalog-link" href="{{ categories.4.url }}">{{ categories.4.name }}</a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

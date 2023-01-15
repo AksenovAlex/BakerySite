@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+
+<h3 class="text-center mt-5 mb-5">Ваша корзина {% if not cart.product.count %}пуста{% endif %}</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Наименование</th>
+      <th scope="col">Изображение</th>
+      <th scope="col">Цена</th>
+      <th scope="col">Кол-во</th>
+      <th scope="col">Общая цена</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in cart.product.all %}
+    <tr>
+      <th scope="row">{{ item.content_object.title }}</th>
+      <td class="w-25"><img src="{{ item.content_object.image.url }}" class="img-fluid"></td>
+      <td>{{ item.content_object.price }} ₽</td>
+      <td>{{ item.amount }}</td>
+      <td>{{ item.total_price }} ₽</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

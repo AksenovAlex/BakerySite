@@ -26,7 +26,7 @@
             <p>Вес: {{ product.weight }}</p>
         </div>
         <div class="product-price elem">
-            <p>Цена: {{ product.price }} ₽</p>
+            <a class="btn" href="{% url 'add_to_cart' ct_model=ct_model slug=product.slug %}">+{{product.price}}₽</a>
         </div>
     </div>
     </div>

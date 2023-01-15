@@ -101,3 +101,16 @@ html, body {
     font-size: 16px;
     font-weight: 400;
 }
+
+.btn {
+    background-color: #846A6A;
+    padding: 7px 12px;
+    text-decoration: none;
+    color: #eee;
+
+    font-family: Oswald;
+    font-size: 16px;
+    font-weight: 400;
+
+    border-radius: 5px;
+}

@@ -1,7 +1,7 @@
 from .models import *
 from .utils import *
 
-from django.http import HttpResponse, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
 from django.views.generic import DetailView, View
 
@@ -10,11 +10,14 @@ from django.views.generic import DetailView, View
 class BaseView(View):
 
     def get(self, request, *args, **kwargs):
+        client = Client.objects.get(client_name=request.user)
+        cart = Cart.objects.get(client=client)
         categories = Category.objects.get_categories_for_catalog()
         products = LatestProducts.objects.get_products_for_main_page()
         context = {
             'categories': categories,
-            'products': products
+            'products': products,
+            'cart': cart
         }
         return render(request, 'catalog/index.html', context)
 
@@ -39,6 +42,11 @@ class ProductDetailView(CategoryDetailView, DetailView):
     template_name = 'catalog/product_detail.html'
     slug_url_kwarg = 'slug'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['ct_model'] = self.model._meta.model_name
+        return context
+
 
 class CategoryDetailView(CategoryDetailView, DetailView):
 
@@ -55,13 +63,35 @@ class CategoryDetailView(CategoryDetailView, DetailView):
         print(context)
         return render(request, 'catalog/product_category.html', context)
 
-#    model = Category
-#    queryset = Category.objects.all()
-#
-#    context_object_name = 'category'
-#    template_name = 'catalog/product_category.html'
-#    slug_url_kwarg = 'slug'
 
+class CartView(View):
+
+    def get(self, request, *args, **kwargs):
+        client = Client.objects.get(client_name=request.user)
+        cart = Cart.objects.get(client=client)
+        categories = Category.objects.get_categories_for_catalog()
+        context = {
+            'categories': categories,
+            'cart': cart
+        }
+        return render(request, 'catalog/cart.html', context)
+
+class AddToCartView(View):
+
+    def get(self, request, *args, **kwargs):
+        ct_model, product_slug = kwargs['ct_model'], kwargs['slug']
+        client = Client.objects.get(client_name=request.user)
+        cart = Cart.objects.get(client=client, in_order=False)
+        content_type = ContentType.objects.get(model=ct_model)
+        product = content_type.model_class().objects.get(slug=product_slug)
+        cart_product, created = CartProduct.objects.get_or_create(
+            client=cart.client, cart=cart, content_type=content_type,
+            object_id=product.id
+        )
+        if created:
+            cart.product.add(cart_product)
+
+        return HttpResponseRedirect('/cart/')
 
 
 def pageNotFound(request, exception):

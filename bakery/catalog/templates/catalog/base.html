@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 
+
     <link rel="stylesheet" href="{% static 'catalog/css/reset.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'catalog/css/style.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'catalog/css/media.css' %}" type="text/css">
@@ -29,7 +30,7 @@
             <div class="menu">
                 <li class="nav-menu-item"><a class="nav-menu-link scrollto" href="#catalog">Продукция</a></li>
                 <li class="nav-menu-item"><a class="nav-menu-link" href="#">Забота о госте</a></li>
-                <li class="nav-menu-item"><a class="nav-menu-link" href="#">Корзина</a></li>
+                <li class="nav-menu-item"><a class="nav-menu-link" href="{% url 'cart' %}">Корзина: +{{ cart.product.count }}</a></li>
                 <li class="nav-menu-item"><a class="nav-menu-link" href="#">Войти</a></li>
             </div>
         </ul>

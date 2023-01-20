@@ -1,29 +1,47 @@
 {% extends 'catalog/base.html' %}
 {% block content %}
 {% load static %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-
-<h3 class="text-center mt-5 mb-5">Ваша корзина {% if not cart.product.count %}пуста{% endif %}</h3>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Наименование</th>
-      <th scope="col">Изображение</th>
-      <th scope="col">Цена</th>
-      <th scope="col">Кол-во</th>
-      <th scope="col">Общая цена</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for item in cart.product.all %}
-    <tr>
-      <th scope="row">{{ item.content_object.title }}</th>
-      <td class="w-25"><img src="{{ item.content_object.image.url }}" class="img-fluid"></td>
-      <td>{{ item.content_object.price }} ₽</td>
-      <td>{{ item.amount }}</td>
-      <td>{{ item.total_price }} ₽</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
+<link rel="stylesheet" href="{% static 'catalog/css/cart_media.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'catalog/css/cart_style.css' %}" type="text/css">
+<div class="container">
+    <div class="cart-title">
+        <div class="cart-title-main">
+            Ваша корзина
+        </div>
+        <div class="cart-title-total-price">
+            <div class="cart-total-product">
+                Всего продуктов: {{ cart.total_product }} шт.
+            </div>
+            <div class="cart-total-price-text">
+                Сумма к оплате: {{ cart.total_price }} ₽
+            </div>
+            <div class="cart-total-price-btn">
+                <button class="cart-btn">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+        {% for item in cart.product.all %}
+    <div class="cart">
+        <div class="cart-image-block">
+            <img class="cart-image" src="{{ item.content_object.image.url }}">
+        </div>
+        <div class="cart-content">
+            <div class="cart-content-title">
+                {{ item.content_object.title }}
+            </div>
+            <div class="cart-price">
+                <div class="cart-total-price">
+                    Цена: <span class="price">{{ item.content_object.price }}</span>
+                </div>
+                <div class="cart-btn">
+                    <span class="minus">-</span>
+                    <span class="num">{{ item.content_object.amount }}</span>
+                    <span class="plus">-</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+</div>
+<script type="text/javascript" src="{% static 'catalog/js/cart.js' %}"></script>
 {% endblock %}

@@ -137,8 +137,8 @@ class Product(models.Model):
 class Client(models.Model):
     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name='URL')
     client_name = models.CharField(max_length=100, verbose_name='Имя')
-    phone = models.CharField(max_length=15, verbose_name='Номер телефона')
-    address = models.CharField(max_length=255, verbose_name='Адрес')
+    phone = models.CharField(max_length=15, verbose_name='Номер телефона', null=True, blank=True)
+    address = models.CharField(max_length=255, verbose_name='Адрес', null=True, blank=True)
 
     def __str__(self):
         return self.client_name
@@ -163,15 +163,26 @@ class CartProduct(models.Model):
 
 class Cart(models.Model):
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
-    client = models.ForeignKey('Client', on_delete=models.PROTECT, verbose_name='Покупатель')
+    client = models.ForeignKey('Client', null=True, on_delete=models.PROTECT, verbose_name='Покупатель')
     product = models.ManyToManyField(CartProduct, blank=True, related_name='related_carts')
     amount = models.PositiveIntegerField(default=1, verbose_name='Количество')
-    total_price = models.DecimalField(max_digits=9, decimal_places=2, verbose_name='Итоговая цена')
+    total_price = models.DecimalField(max_digits=9, decimal_places=2, default=0, verbose_name='Итоговая цена')
     in_order = models.BooleanField(default=False)
     for_anonymous_user = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
+
+    def save(self, *args, **kwargs):
+        cart_data = self.product.aggregate(models.Sum('total_price'), models.Count('id'))
+        print(cart_data)
+        if cart_data.get('total_price__sum'):
+            self.total_price = cart_data['total_price__sum']
+        else:
+            self.total_price = 0
+        self.total_product = cart_data['id__count']
+        super().save(*args, **kwargs)
+
 
 #class OrderStatus(models.Model):
 #    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')

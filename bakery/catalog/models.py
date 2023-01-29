@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.urls import reverse
+from django.utils import timezone
 
 User = get_user_model()
 
@@ -47,14 +48,27 @@ class LatestProductManager:
         return products
 
     @staticmethod
-    def get_products_for_category(*args, **kwargs):
+    def get_products_for_category(**kwargs):
+        print(kwargs)
         products = []
-        ct_models = ContentType.objects.filter(model__in=args)
+        ct_models = ContentType.objects.filter(model__in=kwargs['ct_model'])
         for ct_model in ct_models:
             model_products = ct_model.model_class()._base_manager.all()
-            print(model_products)
             products.extend(model_products)
 
+        return products
+
+
+    def get_products_for_type(*args, **kwargs):
+        ct = args[1]
+        type = args[2]
+        print(ct, type)
+        products = []
+        ct_models = ContentType.objects.filter(model__in=args)
+        print(ct_models)
+        for ct_model in ct_models:
+            model_products = ct_model.model_class()._base_manager.all()
+            products.extend(model_products)
         return products
 
 
@@ -133,12 +147,16 @@ class Product(models.Model):
             raise MaxResolutionErrorException('Разрешение изображения больше максимального')
         super().save(*args, **kwargs)
 
+    def get_model_name(self):
+        return self.__class__.__name__.lower()
+
 
 class Client(models.Model):
     slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name='URL')
     client_name = models.CharField(max_length=100, verbose_name='Имя')
     phone = models.CharField(max_length=15, verbose_name='Номер телефона', null=True, blank=True)
     address = models.CharField(max_length=255, verbose_name='Адрес', null=True, blank=True)
+    orders = models.ManyToManyField('Order', related_name='related_client', verbose_name='Заказы покупателя')
 
     def __str__(self):
         return self.client_name
@@ -173,28 +191,53 @@ class Cart(models.Model):
     def __str__(self):
         return str(self.id)
 
-    def save(self, *args, **kwargs):
-        cart_data = self.product.aggregate(models.Sum('total_price'), models.Count('id'))
-        print(cart_data)
-        if cart_data.get('total_price__sum'):
-            self.total_price = cart_data['total_price__sum']
-        else:
-            self.total_price = 0
-        self.total_product = cart_data['id__count']
-        super().save(*args, **kwargs)
 
+class Order(models.Model):
 
-#class OrderStatus(models.Model):
-#    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
-#    status_name = models.CharField(max_length=15, verbose_name='Состояние заказа')
+    STATUS_NEW = 'new'
+    STATUS_IN_PROGRESS = 'in_progress'
+    STATUS_READY = 'is_ready'
+    STATUS_COMPLETED = 'completed'
 
+    BUYING_TYPE_SELF = 'self'
+    BUYING_TYPE_DELIVERY = 'delivery'
 
-#class Order(models.Model):
-#    slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name='URL')
-#    client = models.ForeignKey('Client', on_delete=models.PROTECT, verbose_name='Покупатель')
-#    status = models.ForeignKey('OrderStatus', on_delete=models.PROTECT, verbose_name='Состояние заказа')
+    STATUS_CHOICES = (
+        (STATUS_NEW, 'Новый заказ'),
+        (STATUS_IN_PROGRESS, 'Заказ в обработке'),
+        (STATUS_READY, 'Заказ готов'),
+        (STATUS_COMPLETED, 'Заказ выполнен'),
+    )
 
-# Create your models here.
+    BUYING_TYPE_CHOICES = (
+        (BUYING_TYPE_SELF, 'Самовывоз'),
+        (BUYING_TYPE_DELIVERY, 'Доставка')
+    )
+
+    client = models.ForeignKey('Client', on_delete=models.CASCADE, related_name='related_orders', verbose_name='Покупатель')
+    first_name = models.CharField(max_length=255, verbose_name='Имя')
+    phone = models.CharField(max_length=20, verbose_name='Телефон')
+    address = models.CharField(max_length=1024, verbose_name='Адрес', null=True, blank=True)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, verbose_name='Корзина', null=True, blank=True)
+    status = models.CharField(
+        max_length=100,
+        verbose_name='Состояние заказа',
+        choices=STATUS_CHOICES,
+        default=STATUS_NEW
+    )
+    buying_type = models.CharField(
+        max_length=100,
+        verbose_name='Тип заказа',
+        choices=BUYING_TYPE_CHOICES,
+        default=BUYING_TYPE_DELIVERY
+    )
+    comment = models.TextField(verbose_name='Комментарий к заказу', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now=True, verbose_name='Дата создания заказа')
+    order_date = models.DateField(verbose_name='Дата получения заказа', default=timezone.now)
+
+    def __str__(self):
+        return str(self.id)
+
 
 class Pie(Product):
 

@@ -12,7 +12,7 @@
                 </div>
                 {% for type in types %}
                 <ul class="sidebar-menu">
-                    <li class="sidebar-menu-item"><a class="sidebar-menu-link" href="#">{{ type }}</a></li>
+                    <li class="sidebar-menu-item"><a class="sidebar-menu-link" href="{% url 'type_products' ct_model=ct_model type=type %}">{{ type }}</a></li>
                 {% endfor %}
                 </ul>
             </div>
@@ -32,8 +32,8 @@
                         {{ product.description|truncatewords:20 }}
                     </div>
                     <ul class="btn-keeper">
-                        <li class="content-btn"><a class="btn" href="#">+{{product.price}}₽</a></li>
-                        <li class="content-btn"><a class="btn" href="#">Подробнее</a></li>
+                        <li class="content-btn"><a class="btn" href="{% url 'add_to_cart' ct_model=ct_model slug=product.slug %}">+{{product.price}}₽</a></li>
+                        <li class="content-btn"><a class="btn" href="{% url 'product_detail' ct_model=ct_model slug=product.slug %}">Подробнее</a></li>
                     </ul>
                 </div>
             </div>

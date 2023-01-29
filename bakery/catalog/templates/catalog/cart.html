@@ -3,25 +3,18 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'catalog/css/cart_media.css' %}" type="text/css">
 <link rel="stylesheet" href="{% static 'catalog/css/cart_style.css' %}" type="text/css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <div class="container">
     <div class="cart-title">
         <div class="cart-title-main">
             Ваша корзина
         </div>
-        <div class="cart-title-total-price">
-            <div class="cart-total-product">
-                Всего продуктов: {{ cart.total_product }} шт.
-            </div>
-            <div class="cart-total-price-text">
-                Сумма к оплате: {{ cart.total_price }} ₽
-            </div>
-            <div class="cart-total-price-btn">
-                <button class="cart-btn">Оформить заказ</button>
-            </div>
-        </div>
     </div>
         {% for item in cart.product.all %}
     <div class="cart">
+        <div class="cart-delete-from-cart">
+            <a href="{% url 'delete_from_cart' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}"><label class="cl-btn-delete"><span class="delete-line"></span></label></a>
+        </div>
         <div class="cart-image-block">
             <img class="cart-image" src="{{ item.content_object.image.url }}">
         </div>
@@ -31,17 +24,38 @@
             </div>
             <div class="cart-price">
                 <div class="cart-total-price">
-                    Цена: <span class="price">{{ item.content_object.price }}</span>
+                    Цена: <span class="price">{{ item.total_price }}</span>
                 </div>
-                <div class="cart-btn">
-                    <span class="minus">-</span>
-                    <span class="num">{{ item.content_object.amount }}</span>
-                    <span class="plus">-</span>
+                <div>
+                    <form action="{% url 'change_amount' ct_model=item.content_object.get_model_name slug=item.content_object.slug %}" method="POST">
+                        {% csrf_token %}
+                        <div class="quantity_inner">
+                            <button type="submit" class="bt_minus">
+                                <svg viewBox="0 0 24 24" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </button>
+                            <input type="text" name="amount" value="{{ item.amount }}" size="2" class="quantity" data-max-count="20" />
+                            <button type="submit" class="bt_plus">
+                                <svg viewBox="0 0 24 24" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 {% endfor %}
+    <div class="cart-title-total-price">
+        <div class="cart-total-product">
+            Итого: {{ cart.total_product }}
+        </div>
+        <div class="cart-total-price-text">
+            Сумма к оплате: {{ cart.total_price }} ₽
+        </div>
+        <div class="cart-total-price-btn">
+            <a href="{% url 'checkout' %}"><button class="cart-order-btn">Оформить заказ</button></a>
+        </div>
+    </div>
+
 </div>
 <script type="text/javascript" src="{% static 'catalog/js/cart.js' %}"></script>
 {% endblock %}

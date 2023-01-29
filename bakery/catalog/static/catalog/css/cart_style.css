@@ -50,6 +50,47 @@
     border-radius: 10px;
 }
 
+.cl-btn-delete {
+    font-size: 24px;
+    cursor: pointer;
+    display: block;
+    padding: 20px 0;
+
+}
+
+.delete-line {
+    display: block;
+    width: 24px;
+    height: 3px;
+
+    position: relative;
+
+    background-color: rgb(106, 49, 8);
+    background-color: transparent;
+}
+
+.delete-line::before,
+.delete-line::after {
+    content: "";
+    display: block;
+    position: absolute;
+    transition: all .3s;
+    width: 100%;
+    height: 100%;
+
+    background-color: rgb(106, 49, 8);
+}
+
+.delete-line::before {
+    transform: rotate(-45deg);
+    top: 0;
+}
+
+.delete-line::after {
+    transform: rotate(45deg);
+    top: 0;
+}
+
 .cart-image-block {
     max-width: 200px;
     max-height: 200px;
@@ -116,4 +157,118 @@
     border-right: 2px solid rgba(0,0,0,0.2);
     border-left: 2px solid rgba(0,0,0,0.2);
     pointer-events: none;
+}
+
+.quantity_inner * {
+    box-sizing: border-box;
+}
+.quantity_inner {
+    display: inline-flex;
+    border-radius: 26px;
+    border: 4px solid rgb(106, 49, 8);
+    position: relative;
+    background: bisque;
+    z-index: 1;
+}
+.quantity_inner .bt_minus,
+.quantity_inner .bt_plus,
+.quantity_inner .bt_buy,
+.quantity_inner .quantity {
+    height: 40px;
+    width: 40px;
+    padding: 0;
+    border: 0;
+    margin: 0;
+    background: bisque;
+    cursor: pointer;
+    outline: 0;
+    border-radius: 26px;
+}
+.quantity_inner .bt_buy {
+    background: #337AB7;
+    width: 90px;
+    height: 48px;
+    position: absolute;
+    right: -70px;
+    top: -4px;
+    z-index: -1;
+    border-radius: 0 26px 26px 0;
+    border: 4px solid #337AB7;
+}
+.quantity_inner .quantity {
+    width: 60px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: rgb(106, 49, 8);
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+}
+.quantity_inner .bt_minus svg,
+.quantity_inner .bt_plus svg,
+.quantity_inner .bt_buy svg {
+    stroke: rgb(106, 49, 8);
+    stroke-width: 4;
+    transition: 0.5s;
+    margin: 10px;
+    fill: none;
+    height: 20px;
+    width: 20px;
+}
+.quantity_inner .bt_buy svg {
+    stroke: #BFE2FF;
+    position: relative;
+    left: 6px;
+}
+.quantity_inner .bt_buy:hover svg {
+    stroke: #FFF;
+}
+.quantity_inner .bt_minus:hover svg,
+.quantity_inner .bt_plus:hover svg {
+    stroke: #000;
+}
+
+.cart-title-total-price {
+    margin-top: 30px;
+    margin-bottom: 15px;
+    padding: 20px;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    font-size: 22px;
+
+}
+
+.cart-total-product {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.cart-total-price-text {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.cart-order-btn {
+    padding-left: 20px;
+    padding-right: 20px;
+
+    border: 0;
+    border-radius: 5px;
+    background: rgb(198, 137, 62);
+    color: #000;
+    padding: 8px 16px;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.cart-order-btn:hover {
+
+    background: #fff;
+}
+
+.cart-order-btn:focus {
+
+    background: #fff;
 }

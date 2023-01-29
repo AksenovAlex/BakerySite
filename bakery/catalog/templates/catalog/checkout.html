@@ -1,0 +1,58 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'catalog/css/order_media.css' %}" type="text/css">
+<link rel="stylesheet" href="{% static 'catalog/css/order_style.css' %}" type="text/css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<div class="container">
+    <div class="cart-title">
+        <div class="cart-title-main">
+            Оформление заказа
+        </div>
+    <div class="cart-title-total-price">
+        <div class="cart-total-product">
+            Всего продуктов: {{ cart.total_product }}
+        </div>
+        <div class="cart-total-price-text">
+            Сумма к оплате: {{ cart.total_price }} ₽
+        </div>
+        <div class="cart-total-price-btn">
+            <a href="{% url 'checkout' %}"><button class="cart-btn">Оформить заказ</button></a>
+        </div>
+    </div>
+    </div>
+{% for item in cart.product.all %}
+    <div class="cart">
+        <div class="cart-image-block">
+            <img class="cart-image" src="{{ item.content_object.image.url }}">
+        </div>
+        <div class="cart-content">
+            <div class="cart-content-title">
+                {{ item.content_object.title }}
+            </div>
+            <div class="cart-price">
+                <div class="cart-total-price">
+                    Цена: <span class="price">{{ item.total_price }}</span>
+                </div>
+                <div>
+                    Количество: {{ item.amount }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+<div>
+    <h3>Форма заказа</h3>
+    <form action="{% url 'make_order' %}" method="POST">
+        {% csrf_token %}
+        <p><label class="form-label" for="{{ form.first_name.id_for_label }}">{{form.first_name.label}}: </label>{{ form.first_name }}</p>
+        <p><label class="form-label" for="{{ form.phone.id_for_label }}">{{form.phone.label}}: </label>{{ form.phone }}</p>
+        <p><label class="form-label" for="{{ form.address.id_for_label }}">{{form.address.label}}: </label>{{ form.address }}</p>
+        <p><label class="form-label" for="{{ form.comment.id_for_label }}">{{form.comment.label}}: </label>{{ form.comment }}</p>
+        <input type="submit" value="Оформить заказ">
+    </form>
+</div>
+</div>
+
+{% endblock content %}

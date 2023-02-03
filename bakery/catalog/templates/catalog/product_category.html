@@ -32,8 +32,8 @@
                         {{ product.description|truncatewords:20 }}
                     </div>
                     <ul class="btn-keeper">
-                        <li class="content-btn"><a class="btn" href="{% url 'add_to_cart' ct_model=ct_model slug=product.slug %}">+{{product.price}}₽</a></li>
-                        <li class="content-btn"><a class="btn" href="{% url 'product_detail' ct_model=ct_model slug=product.slug %}">Подробнее</a></li>
+                        <li class="content-btn"><a class="btn" href="{% url 'add_to_cart' ct_model=product.get_model_name slug=product.slug %}">+{{product.price}}₽</a></li>
+                        <li class="content-btn"><a class="btn" href="{% url 'product_detail' ct_model=product.get_model_name slug=product.slug %}">Подробнее</a></li>
                     </ul>
                 </div>
             </div>

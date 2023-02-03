@@ -12,12 +12,11 @@ from django.db import transaction
 class BaseView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
+        print(request.session)
 
         categories = Category.objects.get_categories_for_catalog()
-        products = LatestProducts.objects.get_products_for_main_page()
         context = {
             'categories': categories,
-            'products': products,
             'cart': self.cart
         }
         return render(request, 'catalog/index.html', context)
@@ -43,21 +42,11 @@ class ProductDetailView(CartMixin, CategoryDetailMixin, DetailView):
 
 class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
 
-    def get(self, request, *args, **kwargs):
-        self.model = self.CT_MODEL_MODEL_CLASS[kwargs['slug']]
-        ct_model = self.model._meta.model_name
-        category = Category.objects.get(slug=kwargs['slug'])
-        products = LatestProducts.objects.get_products_for_category(kwargs['slug'])
-        types = list(set(prod.type for prod in products))
-
-        context = {
-            'category': category,
-            'products': products,
-            'types': types,
-            'cart': self.cart,
-            'ct_model': ct_model
-        }
-        return render(request, 'catalog/product_category.html', context)
+    model = Category
+    queryset = Category.objects.all()
+    context_object_name = 'category'
+    template_name = 'catalog/product_category.html'
+    slug_url_kwarg = 'slug'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -117,6 +106,7 @@ class CheckoutView(CartMixin, View):
 class AddToCartView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
+        print(kwargs)
         ct_model, product_slug = kwargs['ct_model'], kwargs['slug']
         content_type = ContentType.objects.get(model=ct_model)
         product = content_type.model_class().objects.get(slug=product_slug)
@@ -173,7 +163,7 @@ class MakeOrderView(CartMixin, View):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = OrderForm(request.POST or None)
-        client = Client.objects.get(client=request.user)
+        client = Client.objects.get(user=request.user)
         if form.is_valid():
             new_order = form.save(commit=False)
             new_order.client = client

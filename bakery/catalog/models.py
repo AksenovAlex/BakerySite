@@ -1,3 +1,5 @@
+from random import randint
+
 from PIL import Image
 
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -8,7 +10,6 @@ from django.urls import reverse
 from django.utils import timezone
 
 User = get_user_model()
-
 
 def get_models_for_count(*model_names):
     return [models.Count(model_name) for model_name in model_names]
@@ -152,14 +153,13 @@ class Product(models.Model):
 
 
 class Client(models.Model):
-    slug = models.SlugField(max_length=100, unique=True, db_index=True, verbose_name='URL')
-    client_name = models.CharField(max_length=100, verbose_name='Имя')
+    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, verbose_name='Номер телефона', null=True, blank=True)
     address = models.CharField(max_length=255, verbose_name='Адрес', null=True, blank=True)
     orders = models.ManyToManyField('Order', related_name='related_client', verbose_name='Заказы покупателя')
 
     def __str__(self):
-        return self.client_name
+        return f"Покупатель: {self.user.first_name} {self.user.last_name}"
 
 
 class CartProduct(models.Model):
@@ -180,10 +180,9 @@ class CartProduct(models.Model):
 
 
 class Cart(models.Model):
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='URL')
-    client = models.ForeignKey('Client', null=True, on_delete=models.PROTECT, verbose_name='Покупатель')
+    client = models.ForeignKey('Client', null=True, on_delete=models.CASCADE, verbose_name='Покупатель')
     product = models.ManyToManyField(CartProduct, blank=True, related_name='related_carts')
-    amount = models.PositiveIntegerField(default=1, verbose_name='Количество')
+    amount = models.PositiveIntegerField(default=0, verbose_name='Количество')
     total_price = models.DecimalField(max_digits=9, decimal_places=2, default=0, verbose_name='Итоговая цена')
     in_order = models.BooleanField(default=False)
     for_anonymous_user = models.BooleanField(default=False)

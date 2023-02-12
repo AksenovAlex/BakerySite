@@ -111,9 +111,45 @@
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);
 }
 
+.order-form {
+    width: 100%;
+    min-height: 300px;
+
+    border: 2px solid #000;
+}
+
+.order-form-area {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border: 2px solid #000;
+}
+
+.order-form-title {
+    text-align: center;
+
+    font-size: 20px;
+}
+
 .form-label {
     display: inline-block;
     min-width: 200px;
     vertical-align: top;
+
+    font-size: 18px;
 }
+
+.order-btn {
+    width: 150px;
+    height: 50px;
+
+}
+
+.order-btn-submit {
+    text-align: end;
+}
+
+
 

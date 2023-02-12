@@ -10,15 +10,15 @@
                 <div class="sidebar-title">
                     {{ category.title }}
                 </div>
-                {% for type in types %}
+                {% for type in product_type %}
                 <ul class="sidebar-menu">
-                    <li class="sidebar-menu-item"><a class="sidebar-menu-link" href="{% url 'type_products' ct_model=ct_model type=type %}">{{ type }}</a></li>
+                    <li class="sidebar-menu-item"><a class="sidebar-menu-link" href="{% url 'type_products' ct_model=category.slug type=type %}">{{ type }}</a></li>
                 {% endfor %}
                 </ul>
             </div>
 
         </div>
-        {% for product in products %}
+        {% for product, cart_product in products.items %}
         <div class="content">
             <div class="content-inner">
                 <div class="cart">
@@ -31,14 +31,31 @@
                     <div class="cart-content">
                         {{ product.description|truncatewords:20 }}
                     </div>
-                    <ul class="btn-keeper">
-                        <li class="content-btn"><a class="btn" href="{% url 'add_to_cart' ct_model=product.get_model_name slug=product.slug %}">+{{product.price}}₽</a></li>
-                        <li class="content-btn"><a class="btn" href="{% url 'product_detail' ct_model=product.get_model_name slug=product.slug %}">Подробнее</a></li>
-                    </ul>
+                    <div class="btn-keeper">
+                        {% if cart_product in all_cart_products %}
+                            <div class="content-btn">
+                                <form action="{% url 'change_amount' ct_model=product.get_model_name slug=product.slug %}" method="POST">
+                                    {% csrf_token %}
+                                    <div class="quantity_inner">
+                                        <button type="submit" class="bt_minus">
+                                            <svg viewBox="0 0 24 24" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                        </button>
+                                        <input type="text" name="amount" value="{{ cart_product.amount }}" size="2" class="quantity" data-max-count="20" />
+                                        <button type="submit" class="bt_plus">
+                                            <svg viewBox="0 0 24 24" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        {% else %}
+                        <div class="content-btn"><a class="btn" href="{% url 'add_to_cart' ct_model=product.get_model_name slug=product.slug %}">+{{product.price}}₽</a></div>
+                        {% endif %}
+                        <div class="content-btn"><a class="btn" href="{% url 'product_detail' ct_model=product.get_model_name slug=product.slug %}">Подробнее</a></div>
+                    </div>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-
+<script type="text/javascript" src="{% static 'catalog/js/cart.js' %}"></script>
 {% endblock %}

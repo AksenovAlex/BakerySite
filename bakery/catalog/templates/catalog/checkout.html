@@ -10,17 +10,6 @@
         <div class="cart-title-main">
             Оформление заказа
         </div>
-    <div class="cart-title-total-price">
-        <div class="cart-total-product">
-            Всего продуктов: {{ cart.total_product }}
-        </div>
-        <div class="cart-total-price-text">
-            Сумма к оплате: {{ cart.total_price }} ₽
-        </div>
-        <div class="cart-total-price-btn">
-            <a href="{% url 'checkout' %}"><button class="cart-btn">Оформить заказ</button></a>
-        </div>
-    </div>
     </div>
 {% for item in cart.product.all %}
     <div class="cart">
@@ -42,16 +31,18 @@
         </div>
     </div>
 {% endfor %}
-<div>
-    <h3>Форма заказа</h3>
+<div class="order-form">
+    <div class="order-form-title">Форма заказа</div>
+    <div class="order-form-area">
     <form action="{% url 'make_order' %}" method="POST">
         {% csrf_token %}
         <p><label class="form-label" for="{{ form.first_name.id_for_label }}">{{form.first_name.label}}: </label>{{ form.first_name }}</p>
         <p><label class="form-label" for="{{ form.phone.id_for_label }}">{{form.phone.label}}: </label>{{ form.phone }}</p>
         <p><label class="form-label" for="{{ form.address.id_for_label }}">{{form.address.label}}: </label>{{ form.address }}</p>
         <p><label class="form-label" for="{{ form.comment.id_for_label }}">{{form.comment.label}}: </label>{{ form.comment }}</p>
-        <input type="submit" value="Оформить заказ">
+        <div class="order-btn"><input class="order-btn-submit" type="submit" value="Оформить заказ"></div>
     </form>
+    </div>
 </div>
 </div>
 

@@ -25,12 +25,30 @@
         <div class="product-weight elem">
             <p>Вес: {{ product.weight }}</p>
         </div>
-        <div class="product-price elem">
-            <a class="btn" href="{% url 'add_to_cart' ct_model=ct_model slug=product.slug %}">+{{product.price}}₽</a>
-        </div>
+        {% if cart_product in all_cart_products %}
+            <div>
+                <form action="{% url 'change_amount' ct_model=cart_product.content_object.get_model_name slug=cart_product.content_object.slug %}" method="POST">
+                    {% csrf_token %}
+                    <div class="quantity_inner">
+                        <button type="submit" class="bt_minus">
+                            <svg viewBox="0 0 24 24" class="feather feather-minus"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                        <input type="text" name="amount" value="{{ cart_product.amount }}" size="2" class="quantity" data-max-count="20" />
+                        <button type="submit" class="bt_plus">
+                            <svg viewBox="0 0 24 24" class="feather feather-plus"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            <div class="product-price elem">
+                <a class="btn" href="{% url 'add_to_cart' ct_model=ct_model slug=product.slug %}">+{{product.price}}₽</a>
+            </div>
+        {% endif %}
     </div>
     </div>
 </div>
 
+<script type="text/javascript" src="{% static 'catalog/js/cart.js' %}"></script>
 
 {% endblock %}

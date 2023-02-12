@@ -1,4 +1,5 @@
 from .models import *
+from .utils import *
 
 from django.contrib import admin
 from django.forms import ModelChoiceField, ModelForm, ValidationError
@@ -94,10 +95,31 @@ class CakeAdmin(admin.ModelAdmin):
             return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+class CartAdmin(admin.ModelAdmin):
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == 'product':
+            obj_id = get_obj_id(request)
+            cart = Cart.objects.get(pk=obj_id)
+            kwargs['queryset'] = cart.product.all()
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+class ClientAdmin(admin.ModelAdmin):
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == 'orders':
+            obj_id = get_obj_id(request)
+            client = Client.objects.filter(pk=obj_id).first()
+            kwargs['queryset'] = Order.objects.filter(client=client.id)
+
+            print(kwargs)
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+
 admin.site.register(Category)
 admin.site.register(CartProduct)
-admin.site.register(Client)
-admin.site.register(Cart)
+admin.site.register(Client, ClientAdmin)
+admin.site.register(Cart, CartAdmin)
 admin.site.register(Pie, PieAdmin)
 admin.site.register(Bread, BreadAdmin)
 admin.site.register(Pizza, PizzaAdmin)

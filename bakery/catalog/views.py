@@ -12,8 +12,6 @@ from django.db import transaction
 class BaseView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
-        print(request.session)
-
         categories = Category.objects.get_categories_for_catalog()
         context = {
             'categories': categories,
@@ -34,14 +32,21 @@ class ProductDetailView(CartMixin, CategoryDetailMixin, DetailView):
     slug_url_kwarg = 'slug'
 
     def get_context_data(self, **kwargs):
+        product_object = kwargs['object']
+        ct = ContentType.objects.get(model=self.model._meta.model_name)
         context = super().get_context_data(**kwargs)
+        try:
+            cart_product = CartProduct.objects.get(object_id=product_object.id, content_type=ct)
+            context['all_cart_products'] = self.cart.product.all()
+            context['cart_product'] = cart_product
+        except:
+            pass
         context['ct_model'] = self.model._meta.model_name
         context['cart'] = self.cart
         return context
 
 
 class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
-
     model = Category
     queryset = Category.objects.all()
     context_object_name = 'category'
@@ -51,32 +56,39 @@ class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['cart'] = self.cart
+        context['all_cart_products'] = self.cart.product.all()
+        print(context)
         return context
 
 
 class TypeProductsView(CartMixin, CategoryDetailMixin, DetailView):
 
-    def get(self, request, *args, **kwargs):
-        self.model = self.CT_MODEL_MODEL_CLASS[kwargs['ct_model']]
-        ct_model = self.model._meta.model_name
-        category = Category.objects.get(slug=kwargs['ct_model'])
-        products = LatestProducts.objects.get_products_for_type(kwargs['ct_model'], kwargs['type'])
-        types = kwargs['type']
 
-        context = {
-            'category': category,
-            'products': products,
-            'types': types,
-            'cart': self.cart,
-            'ct_model': ct_model
-        }
-        return render(request, 'catalog/product_category.html', context)
+    model = Category
+    queryset = Category.objects.all()
+    context_object_name = 'category'
+    template_name = 'catalog/product_category.html'
+    slug_url_kwarg = 'slug'
+
+#    def get(self, request, *args, **kwargs):
+#        self.model = self.CT_MODEL_MODEL_CLASS[kwargs['ct_model']]
+#        ct_model = self.model._meta.model_name
+#        category = Category.objects.get(slug=kwargs['ct_model'])
+#        products = self.model.objects.filter(type=type)
+#
+#        context = {
+#            'category': category,
+#            'products': products,
+#            'cart': self.cart,
+#            'ct_model': ct_model
+#        }
+#        return render(request, 'catalog/product_category.html', context)
 
     def get_context_data(self, **kwargs):
+        print(kwargs)
         context = super().get_context_data(**kwargs)
         context['cart'] = self.cart
         return context
-
 
 
 class CartView(CartMixin, View):
@@ -118,7 +130,7 @@ class AddToCartView(CartMixin, View):
             self.cart.product.add(cart_product)
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, 'Товар успешно добавлен')
-        return HttpResponseRedirect('/cart/')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class DeleteFromCartView(CartMixin, View):
@@ -155,7 +167,7 @@ class ChangeAmountView(CartMixin, View):
         cart_product.save()
         recalc_cart(self.cart)
         messages.add_message(request, messages.INFO, 'Количество успешно изменено')
-        return HttpResponseRedirect('/cart/')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 class MakeOrderView(CartMixin, View):
@@ -163,7 +175,12 @@ class MakeOrderView(CartMixin, View):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = OrderForm(request.POST or None)
-        client = Client.objects.get(user=request.user)
+        if request.user.is_authenticated:
+            client = Client.objects.filter(user=request.user).first()
+        else:
+            user_name = request.session.get('user')
+            user = User.objects.filter(username=user_name).first()
+            client = Client.objects.filter(user=user.id).first()
         if form.is_valid():
             new_order = form.save(commit=False)
             new_order.client = client
@@ -183,7 +200,3 @@ class MakeOrderView(CartMixin, View):
 
 def pageNotFound(request, exception):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
-
-
-
-

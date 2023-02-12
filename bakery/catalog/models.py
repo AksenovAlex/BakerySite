@@ -159,7 +159,7 @@ class Client(models.Model):
     orders = models.ManyToManyField('Order', related_name='related_client', verbose_name='Заказы покупателя')
 
     def __str__(self):
-        return f"Покупатель: {self.user.first_name} {self.user.last_name}"
+        return self.user.username
 
 
 class CartProduct(models.Model):

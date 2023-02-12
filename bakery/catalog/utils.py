@@ -6,10 +6,14 @@ from django.views.generic import View
 import random
 from string import digits, ascii_lowercase
 
-
 from .models import *
-from bakery.settings import *
+
 from random import randint
+
+
+class CatalogExceptions(Exception):
+    pass
+
 
 class CategoryDetailMixin(SingleObjectMixin):
 
@@ -23,15 +27,33 @@ class CategoryDetailMixin(SingleObjectMixin):
     }
 
     def get_context_data(self, **kwargs):
+        print(kwargs)
         if isinstance(self.get_object(), Category):
             model = self.CT_MODEL_MODEL_CLASS[self.get_object().slug]
+            cart_product = {}
+            product_type = {}
+            for product in model.objects.all():
+                if product.type not in product_type:
+                    product_type[product.type] = [product]
+                else:
+                    product_type[product.type].append(product.type)
+
+                try:
+                    ct = ContentType.objects.get_for_model(model=product)
+                    cp = CartProduct.objects.get(object_id=product.id, content_type=ct)
+                    cart_product[product] = cp
+                except:
+                    cart_product[product] = None
             context = super().get_context_data(**kwargs)
-            context['products'] = model.objects.all()
+            context['products'] = cart_product
+            context['cart_product'] = cart_product
+            context['product_type'] = product_type
             return context
         else:
             context = super().get_context_data(**kwargs)
             context['categories'] = Category.objects.get_categories_for_catalog()
             return context
+
 
 class CartMixin(View):
 
@@ -69,3 +91,8 @@ def recalc_cart(cart):
         cart.total_price = 0
     cart.total_product = cart_data['id__count']
     cart.save()
+
+def get_obj_id(request):
+    path_req = request.path.strip('/').split('/')
+    obj_id = int(path_req[-2])
+    return obj_id

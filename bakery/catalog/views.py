@@ -57,38 +57,68 @@ class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['cart'] = self.cart
         context['all_cart_products'] = self.cart.product.all()
-        print(context)
         return context
 
 
 class TypeProductsView(CartMixin, CategoryDetailMixin, DetailView):
 
 
-    model = Category
-    queryset = Category.objects.all()
-    context_object_name = 'category'
-    template_name = 'catalog/product_category.html'
-    slug_url_kwarg = 'slug'
 
-#    def get(self, request, *args, **kwargs):
-#        self.model = self.CT_MODEL_MODEL_CLASS[kwargs['ct_model']]
-#        ct_model = self.model._meta.model_name
-#        category = Category.objects.get(slug=kwargs['ct_model'])
-#        products = self.model.objects.filter(type=type)
-#
-#        context = {
-#            'category': category,
-#            'products': products,
-#            'cart': self.cart,
-#            'ct_model': ct_model
-#        }
-#        return render(request, 'catalog/product_category.html', context)
+#    def get_context_data(self, **kwargs):
+#        ct_model, product_type = kwargs['ct_model'], kwargs['type']
+#        model = self.CT_MODEL_MODEL_CLASS[ct_model]
+#        cart_product = {}
+#        for product in model.objects.filter(type=product_type):
+#            try:
+#                ct = ContentType.objects.get_for_model(model=product)
+#                cp = CartProduct.objects.get(object_id=product.id, content_type=ct)
+#                cart_product[product] = cp
+#            except:
+#                cart_product[product] = None
+#        context = super().get_context_data(**kwargs)
+#        context['products'] = cart_product
+#        context['cart_product'] = cart_product
+#        context['cart'] = self.cart
+#        return context
 
-    def get_context_data(self, **kwargs):
-        print(kwargs)
-        context = super().get_context_data(**kwargs)
-        context['cart'] = self.cart
-        return context
+    def get(self, request, *args, **kwargs):
+        ct_model, type = kwargs['ct_model'], kwargs['type']
+        model = self.CT_MODEL_MODEL_CLASS[ct_model]
+        category = Category.objects.get(slug=ct_model)
+        cart_product = {}
+        product_type = {}
+        for prod_type in model.objects.all():
+            if prod_type.type not in product_type:
+                product_type[prod_type.type] = [prod_type]
+            else:
+                product_type[prod_type.type].append(prod_type)
+
+        for product in model.objects.filter(type=type):
+            try:
+                ct = ContentType.objects.get_for_model(model=product)
+                cp = CartProduct.objects.get(object_id=product.id, content_type=ct)
+                cart_product[product] = cp
+            except:
+                cart_product[product] = None
+
+        context = {
+            'category': category,
+            'type': type,
+            'products': cart_product,
+            'product_type': product_type,
+            'cart': self.cart
+        }
+
+        return render(request, 'catalog/product_category.html', context)
+
+
+
+
+#    def get_context_data(self, **kwargs):
+#        context = super().get_context_data(**kwargs)
+#        context['cart'] = self.cart
+#        print(context)
+#        return context
 
 
 class CartView(CartMixin, View):
@@ -118,7 +148,6 @@ class CheckoutView(CartMixin, View):
 class AddToCartView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
-        print(kwargs)
         ct_model, product_slug = kwargs['ct_model'], kwargs['slug']
         content_type = ContentType.objects.get(model=ct_model)
         product = content_type.model_class().objects.get(slug=product_slug)

@@ -27,7 +27,6 @@ class CategoryDetailMixin(SingleObjectMixin):
     }
 
     def get_context_data(self, **kwargs):
-        print(kwargs)
         if isinstance(self.get_object(), Category):
             model = self.CT_MODEL_MODEL_CLASS[self.get_object().slug]
             cart_product = {}
@@ -36,7 +35,7 @@ class CategoryDetailMixin(SingleObjectMixin):
                 if product.type not in product_type:
                     product_type[product.type] = [product]
                 else:
-                    product_type[product.type].append(product.type)
+                    product_type[product.type].append(product)
 
                 try:
                     ct = ContentType.objects.get_for_model(model=product)
@@ -81,6 +80,7 @@ class CartMixin(View):
         self.cart = cart
         self.cart.save()
         return super().dispatch(request, *args, **kwargs)
+
 
 
 def recalc_cart(cart):

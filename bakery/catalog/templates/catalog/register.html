@@ -1,0 +1,29 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'catalog/css/register_style.css' %}" type="text/css">
+<form method="post">
+    {% csrf_token %}
+    <main>
+        <div class="register-form-conteiner">
+            <h1 class="form-title">
+                Регистрация
+            </h1>
+            {% for f in form %}
+            <div class="form-fields">
+                <div class="form-field">
+                    {{ f }}
+                </div>
+                {% endfor %}
+
+            </div>
+            <div class="form-buttons">
+                <button type="submit" class="button">Регистрация</button>
+                <div class="divider">или</div>
+                <a href="{% url 'login' %}" class="button button-reg">Войти</a>
+            </div>
+        </div>
+        </main>
+</form>
+{% endblock %}

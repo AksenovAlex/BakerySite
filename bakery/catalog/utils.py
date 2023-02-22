@@ -47,6 +47,7 @@ class CategoryDetailMixin(SingleObjectMixin):
             context['products'] = cart_product
             context['cart_product'] = cart_product
             context['product_type'] = product_type
+            context['type'] = None
             return context
         else:
             context = super().get_context_data(**kwargs)

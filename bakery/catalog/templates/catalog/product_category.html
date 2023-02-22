@@ -12,7 +12,11 @@
                 </div>
                 {% for type in product_type %}
                 <ul class="sidebar-menu">
+                    {% if category_type == type %}
+                    <li class="sidebar-menu-active-item"><p class="sidebar-menu-active-link">{{ type }}</p></li>
+                    {% else %}
                     <li class="sidebar-menu-item"><a class="sidebar-menu-link" href="{% url 'type_products' ct_model=category.slug type=type %}">{{ type }}</a></li>
+                    {% endif %}
                 {% endfor %}
                 </ul>
             </div>

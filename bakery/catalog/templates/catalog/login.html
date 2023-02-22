@@ -1,0 +1,30 @@
+{% extends 'catalog/base.html' %}
+
+{% block content %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'catalog/css/login_style.css' %}" type="text/css">
+<div class="log-form">
+  <form method="post">
+    {% csrf_token %}
+    <main>
+        <div class="register-form-conteiner">
+            <h1 class="form-title">
+                Авторизация
+            </h1>
+            {% for f in form %}
+            <div class="form-fields">
+                <div class="form-field">
+                    {{ f }}
+                </div>
+                {% endfor %}
+
+            </div>
+            <div class="form-buttons">
+                <button type="submit" class="button">Войти</button>
+            </div>
+        </div>
+        </main>
+  </form>
+</div><!--end log form -->
+
+{% endblock %}

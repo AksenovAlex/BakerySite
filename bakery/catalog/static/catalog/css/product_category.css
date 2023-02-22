@@ -68,6 +68,25 @@
     background-color: #eee;
 }
 
+.sidebar-menu-active-item {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    list-style: none;
+
+    background-color: #eee;
+}
+
+.sidebar-menu-active-link {
+    padding: 20px;
+
+    text-decoration: none;
+    color: rgb(106, 49, 8);
+
+
+    transition: all .3s;
+
+}
+
 .sidebar-menu {
     text-align: center;
 
@@ -155,6 +174,8 @@
 
     border-radius: 5px;
 }
+
+
 
 .quantity_inner * {
     box-sizing: border-box;

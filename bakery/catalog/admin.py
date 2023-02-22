@@ -107,6 +107,7 @@ class CartAdmin(admin.ModelAdmin):
 class ClientAdmin(admin.ModelAdmin):
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
+
         if db_field.name == 'orders':
             obj_id = get_obj_id(request)
             client = Client.objects.filter(pk=obj_id).first()
@@ -114,6 +115,7 @@ class ClientAdmin(admin.ModelAdmin):
 
             print(kwargs)
         return super().formfield_for_manytomany(db_field, request, **kwargs)
+
 
 
 admin.site.register(Category)

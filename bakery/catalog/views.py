@@ -1,10 +1,18 @@
+from django import views
+
+from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+
 from .models import *
 from .utils import *
-from .forms import OrderForm
+from .forms import OrderForm, LoginClientForm, RegistrationForm
 
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
-from django.shortcuts import render
-from django.views.generic import DetailView, View
+from django.shortcuts import render, redirect
+from django.views.generic import DetailView, View, CreateView
 from django.contrib import messages
 from django.db import transaction
 
@@ -62,25 +70,6 @@ class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
 
 class TypeProductsView(CartMixin, CategoryDetailMixin, DetailView):
 
-
-
-#    def get_context_data(self, **kwargs):
-#        ct_model, product_type = kwargs['ct_model'], kwargs['type']
-#        model = self.CT_MODEL_MODEL_CLASS[ct_model]
-#        cart_product = {}
-#        for product in model.objects.filter(type=product_type):
-#            try:
-#                ct = ContentType.objects.get_for_model(model=product)
-#                cp = CartProduct.objects.get(object_id=product.id, content_type=ct)
-#                cart_product[product] = cp
-#            except:
-#                cart_product[product] = None
-#        context = super().get_context_data(**kwargs)
-#        context['products'] = cart_product
-#        context['cart_product'] = cart_product
-#        context['cart'] = self.cart
-#        return context
-
     def get(self, request, *args, **kwargs):
         ct_model, type = kwargs['ct_model'], kwargs['type']
         model = self.CT_MODEL_MODEL_CLASS[ct_model]
@@ -101,24 +90,18 @@ class TypeProductsView(CartMixin, CategoryDetailMixin, DetailView):
             except:
                 cart_product[product] = None
 
+        all_cart_products = self.cart.product.all()
+
         context = {
             'category': category,
-            'type': type,
+            'category_type': type,
             'products': cart_product,
             'product_type': product_type,
+            'all_cart_products': all_cart_products,
             'cart': self.cart
         }
 
         return render(request, 'catalog/product_category.html', context)
-
-
-
-
-#    def get_context_data(self, **kwargs):
-#        context = super().get_context_data(**kwargs)
-#        context['cart'] = self.cart
-#        print(context)
-#        return context
 
 
 class CartView(CartMixin, View):
@@ -225,6 +208,50 @@ class MakeOrderView(CartMixin, View):
             messages.add_message(request, messages.INFO, 'Спасибо за заказ!')
             return HttpResponseRedirect('/')
         return HttpResponseRedirect('/checkout/')
+
+
+class LoginClient(LoginView):
+    form_class = LoginClientForm
+    template_name = 'catalog/login.html'
+
+    def get_success_url(self):
+        return reverse_lazy('home')
+
+
+class RegisterUser(views.View):
+    def get(self, request, *args, **kwargs):
+        form = RegistrationForm(request.POST or None)
+        context = {
+            'form': form
+        }
+        return render(request, 'catalog/register.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = RegistrationForm(request.POST or None)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            new_user.username = form.cleaned_data['username']
+            new_user.save()
+            new_user.set_password(form.cleaned_data['password'])
+            new_user.save()
+            Client.objects.create(
+                user=new_user,
+                phone=form.cleaned_data['phone'],
+                address=form.cleaned_data['address']
+            )
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            login(request, user)
+            return HttpResponseRedirect('/')
+        context = {
+            'form': form
+        }
+        return render(request, 'catalog/register.html', context)
+
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('home')
 
 
 def pageNotFound(request, exception):
